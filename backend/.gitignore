@@ -1,0 +1,10 @@
+# Python gitignore stubs
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.env
+.pytest_cache/

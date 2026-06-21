@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+google-generativeai
+pydantic
+pydantic-settings
+uvloop; sys_platform != 'win32'
