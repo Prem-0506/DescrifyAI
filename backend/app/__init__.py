@@ -1,1 +1,1 @@
-# App package initializer
+from .main import app

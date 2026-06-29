@@ -1,0 +1,151 @@
+{
+  "info": {
+    "name": "DescrifyAI API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /api/products",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/products",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "products"]
+        }
+      },
+      "response": [
+        {
+          "name": "Success",
+          "originalRequest": {
+            "method": "GET",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/products"
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "body": "[{\"id\":\"prod-001\",\"name\":\"Vanilla Bean Crumble\",\"category\":\"Desserts\",\"price\":12.5,\"description\":\"A premium dessert offering rich vanilla notes.\",\"in_stock\":true},{\"id\":\"prod-002\",\"name\":\"Honey Citrus Tea\",\"category\":\"Beverages\",\"price\":6.75,\"description\":\"Bright citrus and floral honey in a comforting tea blend.\",\"in_stock\":true}]"
+        }
+      ]
+    },
+    {
+      "name": "GET /api/products/{id}",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/products/prod-001",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "products", "prod-001"]
+        }
+      },
+      "response": [
+        {
+          "name": "Success",
+          "status": "OK",
+          "code": 200,
+          "body": "{\"id\":\"prod-001\",\"name\":\"Vanilla Bean Crumble\",\"category\":\"Desserts\",\"price\":12.5,\"description\":\"A premium dessert offering rich vanilla notes.\",\"in_stock\":true}"
+        }
+      ]
+    },
+    {
+      "name": "POST /api/products",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Spiced Honey\",\n  \"category\": \"Condiments\",\n  \"price\": 8.5,\n  \"description\": \"A warm flavor profile for breakfast spreads\",\n  \"in_stock\": true\n}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/products",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "products"]
+        }
+      },
+      "response": [
+        {
+          "name": "Created",
+          "status": "Created",
+          "code": 201,
+          "body": "{\"id\":\"prod-999\",\"name\":\"Spiced Honey\",\"category\":\"Condiments\",\"price\":8.5,\"description\":\"A warm flavor profile for breakfast spreads\",\"in_stock\":true}"
+        }
+      ]
+    },
+    {
+      "name": "PATCH /api/products/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"price\": 9.75,\n  \"in_stock\": false\n}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/products/prod-001",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "products", "prod-001"]
+        }
+      },
+      "response": [
+        {
+          "name": "Updated",
+          "status": "OK",
+          "code": 200,
+          "body": "{\"id\":\"prod-001\",\"name\":\"Vanilla Bean Crumble\",\"category\":\"Desserts\",\"price\":9.75,\"description\":\"A premium dessert offering rich vanilla notes.\",\"in_stock\":false}"
+        }
+      ]
+    },
+    {
+      "name": "DELETE /api/products/{id}",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/products/prod-001",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "products", "prod-001"]
+        }
+      },
+      "response": [
+        {
+          "name": "Deleted",
+          "status": "OK",
+          "code": 200,
+          "body": "{\"deleted\":true,\"id\":\"prod-001\"}"
+        }
+      ]
+    },
+    {
+      "name": "GET /api/products/search?q=vanilla",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/products/search?q=vanilla",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "products", "search"],
+          "query": [{"key": "q", "value": "vanilla"}]
+        }
+      },
+      "response": [
+        {
+          "name": "Search Results",
+          "status": "OK",
+          "code": 200,
+          "body": "[{\"id\":\"prod-001\",\"name\":\"Vanilla Bean Crumble\",\"category\":\"Desserts\",\"price\":12.5,\"description\":\"A premium dessert offering rich vanilla notes.\",\"in_stock\":true}]"
+        }
+      ]
+    }
+  ]
+}

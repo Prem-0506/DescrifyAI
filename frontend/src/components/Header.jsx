@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+import { useNavigate } from "react-router-dom"
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const navigate = useNavigate()
 
   return (
     <header className="app-header">
@@ -24,8 +26,8 @@ export default function Header() {
           </nav>
 
           <div className="header-actions">
-            <button className="btn-login" type="button">Log in</button>
-            <button className="btn-teal" type="button">Get Started — It's Free</button>
+            <button className="btn-login" type="button" onClick={() => navigate("/login")}>Log in</button>
+            <button className="btn-teal" type="button" onClick={() => navigate("/signup")}>Get Started — It's Free</button>
           </div>
 
           {/* Mobile hamburger menu toggle */}

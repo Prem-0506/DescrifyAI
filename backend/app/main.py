@@ -1,23 +1,35 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Optional
 import os
+from typing import Optional
+
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+
+from app.routers.products import router as products_router
+
+load_dotenv()
 
 app = FastAPI(
-    title="DescrifyAI API",
+    title=os.getenv("API_TITLE", "DescrifyAI API"),
     description="AI-powered product description generator backend for food businesses",
-    version="1.0.0"
+    version=os.getenv("API_VERSION", "1.0.0"),
 )
 
-# Configure CORS so our React frontend can make requests
+origins = [origin.strip() for origin in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",") if origin.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust in production
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(products_router)
+
 
 class DescriptionRequest(BaseModel):
     product_name: str
@@ -26,25 +38,27 @@ class DescriptionRequest(BaseModel):
     target_audience: Optional[str] = None
     tone: str = "premium"
 
+
 class DescriptionResponse(BaseModel):
     description: str
     character_count: int
     seo_score: int
+
 
 @app.get("/")
 def read_root():
     return {
         "status": "online",
         "service": "DescrifyAI Backend API",
-        "version": "1.0.0"
+        "version": app.version,
     }
+
 
 @app.post("/api/generate", response_model=DescriptionResponse)
 async def generate_description(request: DescriptionRequest):
     if not request.product_name or not request.ingredients:
         raise HTTPException(status_code=400, detail="Product name and ingredients are required.")
-    
-    # Simple templates mapping matching the frontend services
+
     templates = {
         "premium": (
             f"Indulge in the exquisite flavor of our artisanal {request.product_name}. "
@@ -69,14 +83,24 @@ async def generate_description(request: DescriptionRequest):
             f"Packed with goodness and real {request.ingredients}, it's the perfect treat for any time of day. "
             f"We've locked in amazing flavors like {request.flavor_profile or 'sweetness'} "
             f"so you and other {request.target_audience or 'friends'} can enjoy every single bite."
-        )
+        ),
     }
 
     selected_tone = request.tone.lower()
     desc_template = templates.get(selected_tone, templates["premium"])
-    
+
     return DescriptionResponse(
         description=desc_template,
         character_count=len(desc_template),
-        seo_score=92  # Standard rating
+        seo_score=92,
     )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(status_code=422, content={"detail": exc.errors()})
